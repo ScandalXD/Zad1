@@ -53,6 +53,13 @@ export default function App() {
     return matchesStore && minOk && maxOk;
   });
 
+  const resetFilters = () => {
+    setFilterStore('');
+    setMinPrice('');
+    setMaxPrice('');
+    setFilterModalVisible(false); 
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.buttonRow}>
@@ -109,7 +116,11 @@ export default function App() {
             onMinPrice={setMinPrice}
             onMaxPrice={setMaxPrice}
           />
-          <Button title="Zamknij Filtry" onPress={() => setFilterModalVisible(false)} />
+          <View style={styles.filterButtonsContainer}>
+            <Button title="Zastosuj filtry" onPress={() => setFilterModalVisible(false)} />
+            <View style={{ height: 20 }} /> 
+            <Button title="Resetuj filtry" color="red" onPress={resetFilters} />
+          </View>
         </View>
       </Modal>
     </SafeAreaView>
