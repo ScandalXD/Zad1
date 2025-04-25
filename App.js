@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SafeAreaView, View, Button, Modal, TextInput } from 'react-native';
+import { SafeAreaView, View, Button, Modal, TextInput, Text } from 'react-native';
 import ShoppingList from './components/ShoppingList';
 import FilterBar from './components/FilterBar';
 import { styles } from './style/styles';
@@ -10,18 +10,26 @@ export default function App() {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
 
   const [newProduct, setNewProduct] = useState({ name: '', price: '', store: '' });
+  const [priceError, setPriceError] = useState('');
 
   const [filterStore, setFilterStore] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
 
   const addProduct = () => {
-    if (!newProduct.name || !newProduct.price || !newProduct.store) return;
+    const parsedPrice = parseFloat(newProduct.price);
+    if (!newProduct.name || !newProduct.store) return;
+    if (isNaN(parsedPrice)) {
+      setPriceError('Cena musi być liczbą!');
+      return;
+    }
+
     setProducts([
-      { ...newProduct, price: parseFloat(newProduct.price), bought: false },
+      { ...newProduct, price: parsedPrice, bought: false },
       ...products,
     ]);
     setNewProduct({ name: '', price: '', store: '' });
+    setPriceError('');
     setModalVisible(false);
   };
 
@@ -71,8 +79,12 @@ export default function App() {
             placeholder="Cena"
             keyboardType="numeric"
             value={newProduct.price}
-            onChangeText={(text) => setNewProduct({ ...newProduct, price: text })}
+            onChangeText={(text) => {
+              setNewProduct({ ...newProduct, price: text });
+              setPriceError('');
+            }}
           />
+          {priceError ? <Text style={{ color: 'red' }}>{priceError}</Text> : null}
           <TextInput
             style={styles.input}
             placeholder="Sklep"
@@ -80,7 +92,10 @@ export default function App() {
             onChangeText={(text) => setNewProduct({ ...newProduct, store: text })}
           />
           <Button title="Dodaj" onPress={addProduct} />
-          <Button title="Anuluj" onPress={() => setModalVisible(false)} />
+          <Button title="Anuluj" onPress={() => {
+            setModalVisible(false);
+            setPriceError('');
+          }} />
         </View>
       </Modal>
 
