@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SafeAreaView, View, Button, Modal, TextInput, Text } from 'react-native';
+import { SafeAreaView, View, Button, Modal, TextInput, Text, Alert } from 'react-native';
 import ShoppingList from './components/ShoppingList';
 import FilterBar from './components/FilterBar';
 import { styles } from './style/styles';
@@ -18,9 +18,14 @@ export default function App() {
 
   const addProduct = () => {
     const parsedPrice = parseFloat(newProduct.price);
-    if (!newProduct.name || !newProduct.store) return;
+
+    if (!newProduct.name || !newProduct.store) {
+      Alert.alert('Wypełnij wymagane pola "Nazwa, Sklep" ');
+      return;
+    } 
+
     if (isNaN(parsedPrice)) {
-      setPriceError('Cena musi być liczbą!');
+      Alert.alert('Cena musi być liczbą!');
       return;
     }
 
